@@ -8,8 +8,6 @@ eval "$(zoxide init fish)"
 # Show ranked database
 alias za='zoxide query -ls'
 
-# Remove current dir from db
-alias zr='zoxide remove "$(pwd)"'
 
 # Quick ls after jump
 

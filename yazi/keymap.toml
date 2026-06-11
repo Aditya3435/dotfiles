@@ -20,3 +20,8 @@ on = [ "C" ]
 run = 'shell -- wl-copy "$(pwd)"'
 desc = "Copy cwd"
 
+
+[[mgr.prepend_keymap]]
+on = [ "R" ]
+run = 'plugin recycle-bin'
+desc = "Open Recycle Bin"
