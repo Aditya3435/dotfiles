@@ -1,0 +1,22 @@
+# ~/.config/yazi/keymap.toml
+
+[[mgr.prepend_keymap]]
+on = [ "T" ]
+run = 'shell -- hyprctl dispatch exec "kitty --working-directory \"$PWD\""'
+desc = "Open terminal"
+
+[[manager.prepend_keymap]]
+on = [ "E" ]
+run = 'plugin shell -- pinta "$1"'
+desc = "Open with Pinta"
+
+[[mgr.prepend_keymap]]
+on = [ "o" ]
+run = 'shell -- xdg-open "$@"'
+desc = "Open externally"
+
+[[mgr.prepend_keymap]]
+on = [ "C" ]
+run = 'shell -- wl-copy "$(pwd)"'
+desc = "Copy cwd"
+
