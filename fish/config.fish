@@ -1,4 +1,6 @@
 # All User Configs goes here
+set -gx PNPM_HOME "$HOME/.local/share/pnpm"
+fish_add_path $PNPM_HOME
 
 eval "$(zoxide init fish)"
 

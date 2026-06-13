@@ -1,10 +1,34 @@
 -- https://gist.github.com/Archisman-Mridha/41923c35fec46d46497a06bdca56cb6f
 -- use gx to open the site in browser
+-- use ctrl + i for forward cursor postion(opposite of ctrl + o)
 -- use . to repeate last command (like ciw then ., diw then .)
 -- z= for spelling correction
 -- gv to go to previous selection
 -- press o to jump between first and last selected character
 -- ctrl + w to delete the whole word being in insert mode
+-- ctrl + v to select number vertically then do g Ctrl-a to increment, 00000->01234
+--
+--original
+--1
+--2
+--4
+--5
+--6
+--
+--Ctrl-a (+1 to each line)
+--2
+--3
+--5
+--6
+--7
+--
+--g Ctrl-a (+i to each line)
+--2
+--4
+--7
+--9
+--11
+
 
 vim.opt.termguicolors = false
 vim.cmd.colorscheme("slate")
@@ -86,7 +110,6 @@ vim.opt.ttimeoutlen = 50 -- key code timeout
 vim.opt.autoread = true -- auto-reload changes if outside of neovim
 vim.opt.autowrite = false -- do not auto-save
 
-vim.opt.hidden = true -- allow hidden buffers
 vim.opt.errorbells = false -- no error sounds
 vim.opt.backspace = "indent,eol,start" -- better backspace behaviour
 vim.opt.autochdir = false -- do not autochange directories
@@ -96,7 +119,7 @@ vim.opt.selection = "inclusive" -- include last char in selection
 vim.opt.mouse = "a" -- enable mouse support
 vim.opt.clipboard:append("unnamedplus") -- use system clipboard
 vim.opt.modifiable = true -- allow buffer modifications
-vim.opt.encoding = "utf-8" -- set encoding
+-- vim.opt.encoding = "utf-8" -- set encoding
 
 vim.opt.guicursor =
 	"n-v-c:block,i-ci-ve:block,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175" -- cursor blinking and settings
@@ -152,7 +175,7 @@ local function file_type()
 		vim = "\u{e62b} ", -- nf-dev-vim
 		sh = "\u{f489} ", -- nf-oct-terminal
 		bash = "\u{f489} ",
-		zsh = "\u{f489} ",
+		fish = "\u{f489} ",
 		rust = "\u{e7a8} ", -- nf-dev-rust
 		go = "\u{e724} ", -- nf-dev-go
 		c = "\u{e61e} ", -- nf-dev-c
@@ -287,8 +310,12 @@ local function RunCode()
 			return
 		end
 
-		local run_cmd = "kitty zsh -c './" .. fileBase .. '; echo; read "REPLY?Press Enter to exit..."\''
-
+local run_cmd =
+	"kitty fish -c "
+	.. vim.fn.shellescape(
+		"./" .. vim.fn.fnamemodify(fileBase, ":t")
+			.. "; echo; read -P 'Press Enter to exit...'"
+	)
 		vim.fn.jobstart(run_cmd, { detach = true })
 		return
 	end
@@ -297,8 +324,13 @@ local function RunCode()
 	-- Python
 	-- =========================
 	if ext == "py" then
-		local run_cmd = "kitty zsh -c 'python3 \"" .. fileName .. '"; echo; read "REPLY?Press Enter to exit..."\''
-
+local run_cmd =
+	"kitty fish -c "
+	.. vim.fn.shellescape(
+		"python3 "
+			.. vim.fn.shellescape(fileName)
+			.. "; echo; read -P 'Press Enter to exit...'"
+	)
 		vim.fn.jobstart(run_cmd, { detach = true })
 		return
 	end
@@ -306,14 +338,9 @@ local function RunCode()
 	print("Unsupported file type")
 end
 
-vim.keymap.set("n", "<F5>", RunCode, {
+vim.keymap.set("n", "<S-CR>", RunCode, {
 	desc = "Run C++ or Python",
 })
-vim.keymap.set("n", "<F9>", function()
-	vim.cmd("write")
-	vim.fn.system("clear")
-	CompileAndRun()
-end, { desc = "Save, Clear, Compile and Run C++" })
 
 vim.g.mapleader = " " -- space for leader
 vim.g.maplocalleader = " " -- space for localleader
@@ -379,7 +406,7 @@ vim.keymap.set("n", "<leader>vib", function()
 	if start_line > 0 and end_line > start_line + 1 then
 		vim.api.nvim_win_set_cursor(0, { start_line + 1, 0 })
 		vim.cmd("normal! V")
-		vim.api.nvim_win_set_cursor(0, { end_line - 1, 0 })
+		vim.api.nvim_win_set_cursor(0, { end_line - 1, 0 })    
 	else
 		print("No Python code block found.")
 	end
@@ -422,7 +449,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 		"*.html",
 		"*.sh",
 		"*.bash",
-		"*.zsh",
+		"*.fish",
 		"*.c",
 		"*.cpp",
 		"*.h",
@@ -554,19 +581,21 @@ require("flash").setup({
 })
 
 -- Keymaps (Standard Flash setup)
-vim.keymap.set({ "n", "x", "o" }, "s", function()
+vim.keymap.set({ "n", "x", "o" }, "-", function()
 	require("flash").jump()
 end, { desc = "Flash Jump" })
-vim.keymap.set({ "n", "x", "o" }, "S", function()
-	require("flash").treesitter()
-end, { desc = "Flash Treesitter" })
+-- vim.keymap.set({ "n", "x", "o" }, "X", function()
+-- 	require("flash").treesitter()
+-- end, { desc = "Flash Treesitter" })
 
--- Extra: Treesitter Search (Like 'yR' to yank a treesitter node remotely)
+
+
+--Extra: Treesitter Search (Like 'yR' to yank a treesitter node remotely)
 vim.keymap.set({ "o", "x" }, "R", function()
 	require("flash").treesitter_search()
 end, { desc = "Treesitter Search" })
 
--- Extra: Remote Flash (Use in operator-pending mode like 'yr')
+-- Extra: Remote Flash (Use in operator-pending mode like 'yr', 'dr', 'cr', then press to esc to go back to previous cursor automatically(basically remote access))
 vim.keymap.set("o", "r", function()
 	require("flash").remote()
 end, { desc = "Remote Flash" })

@@ -1,0 +1,52 @@
+{
+    "gitlens.ai.model": "vscode",
+    "gitlens.ai.vscode.model": "copilot:oswe-vscode-modelD",
+    "workbench.colorTheme": "Red One Dark Pro | Mirage",
+    "workbench.colorCustomizations": {
+        
+
+
+        "[Red One Dark Pro | Mirage]": {
+            // Main Central Areas
+            "editor.background": "#0d1616",
+            "sideBar.background": "#0d1616",
+            "terminal.background": "#0d1616",
+            
+            // Outer Frame (Full Window Effect)
+            "titleBar.activeBackground": "#0d1616",
+            "titleBar.inactiveBackground": "#0d1616",
+            "activityBar.background": "#0d1616",
+            "statusBar.background": "#0d1616",
+
+            // Bottom Panel Area (Problems, Output, Debug Console)
+            "panel.background": "#0d1616",
+            "panel.border": "#0d1616",
+            "panelTitle.activeBorder": "#0d1616",
+
+            // Left Side Bar Sections (Outline, Timeline, Folders)
+            "sideBarSectionHeader.background": "#0d1616",
+            "sideBarSectionHeader.border": "#0d1616",
+            "list.hoverBackground": "#142222",
+            "list.activeSelectionBackground": "#1b2d2d",
+
+            // Top File Buffers / Tabs Area
+            "editorGroupHeader.tabsBackground": "#0d1616", // Background of the entire tab row
+            "tab.inactiveBackground": "#0d1616",          // Background of unselected tabs
+            "tab.activeBackground": "#0d1616",            // Background of the currently open tab
+            "tab.border": "#0d1616",                      // Removes borders between individual tabs
+            "tab.activeBorder": "#0d1616",                // Optional: hides the line under the active tab
+            "editorGroup.border": "#0d1616",              // Removes borders if you split your editor
+
+            // Welcome Page Customizations
+            "welcomePage.background": "#0d1616",
+            "welcomePage.tileBackground" : "#0d1616", 
+            "welcomePage.tileHoverBackground":"#142222",
+            "editorGroupHeader.noTabsBackground": "#0d1616", // Background when no tabs are open
+            "editorGroup.emptyBackground": "#0d1616", // Background when no editors are open
+            
+
+
+        }
+    }
+}
+
