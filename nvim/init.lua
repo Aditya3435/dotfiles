@@ -29,7 +29,6 @@
 --9
 --11
 
-
 vim.opt.termguicolors = false
 vim.cmd.colorscheme("slate")
 
@@ -310,12 +309,10 @@ local function RunCode()
 			return
 		end
 
-local run_cmd =
-	"kitty fish -c "
-	.. vim.fn.shellescape(
-		"./" .. vim.fn.fnamemodify(fileBase, ":t")
-			.. "; echo; read -P 'Press Enter to exit...'"
-	)
+		local run_cmd = "kitty fish -c "
+			.. vim.fn.shellescape(
+				"./" .. vim.fn.fnamemodify(fileBase, ":t") .. "; echo; read -P 'Press Enter to exit...'"
+			)
 		vim.fn.jobstart(run_cmd, { detach = true })
 		return
 	end
@@ -324,13 +321,10 @@ local run_cmd =
 	-- Python
 	-- =========================
 	if ext == "py" then
-local run_cmd =
-	"kitty fish -c "
-	.. vim.fn.shellescape(
-		"python3 "
-			.. vim.fn.shellescape(fileName)
-			.. "; echo; read -P 'Press Enter to exit...'"
-	)
+		local run_cmd = "kitty fish -c "
+			.. vim.fn.shellescape(
+				"python3 " .. vim.fn.shellescape(fileName) .. "; echo; read -P 'Press Enter to exit...'"
+			)
 		vim.fn.jobstart(run_cmd, { detach = true })
 		return
 	end
@@ -393,11 +387,24 @@ vim.keymap.set("v", ">", ">gv", { desc = "Indent right and reselect" })
 
 vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position" })
 
-vim.keymap.set("n", "<leader>pa", function() -- show file path
+vim.keymap.set("n", "<A-,>", "<Cmd>BufferPrevious<CR>")
+vim.keymap.set("n", "<A-.>", "<Cmd>BufferNext<CR>")
+
+vim.keymap.set("n", "<A-1>", "<Cmd>BufferGoto 1<CR>")
+vim.keymap.set("n", "<A-2>", "<Cmd>BufferGoto 2<CR>")
+vim.keymap.set("n", "<A-3>", "<Cmd>BufferGoto 3<CR>")
+vim.keymap.set("n", "<A-4>", "<Cmd>BufferGoto 4<CR>")
+vim.keymap.set("n", "<A-5>", "<Cmd>BufferGoto 5<CR>")
+
+vim.keymap.set("n", "<A-c>", "<Cmd>BufferClose<CR>")
+
+vim.keymap.set("n", "<leader>pa", function()
 	local path = vim.fn.expand("%:p")
-	vim.fn.setreg("+", path)
-	print("file:", path)
-end, { desc = "Copy full file path" })
+	local escaped = vim.fn.shellescape(path)
+
+	vim.fn.setreg("+", escaped)
+	print("file:", escaped)
+end, { desc = "Copy shell-escaped file path" })
 
 --Keymap to select python blocks in ipynb files
 vim.keymap.set("n", "<leader>vib", function()
@@ -406,7 +413,7 @@ vim.keymap.set("n", "<leader>vib", function()
 	if start_line > 0 and end_line > start_line + 1 then
 		vim.api.nvim_win_set_cursor(0, { start_line + 1, 0 })
 		vim.cmd("normal! V")
-		vim.api.nvim_win_set_cursor(0, { end_line - 1, 0 })    
+		vim.api.nvim_win_set_cursor(0, { end_line - 1, 0 })
 	else
 		print("No Python code block found.")
 	end
@@ -558,11 +565,37 @@ vim.pack.add({
 	},
 	"https://github.com/L3MON4D3/LuaSnip",
 	"https://github.com/obsidian-nvim/obsidian.nvim",
+	-- {
+	-- 	src = "https://github.com/akinsho/bufferline.nvim",
+	-- 	version = "v4.9.1",
+	-- },
+	{
+		src = "https://github.com/nvim-tree/nvim-web-devicons",
+	},
+	{
+		src = "https://github.com/romgrk/barbar.nvim",
+		version = "v1.9.1",
+	},
 })
 
 -- ============================================================================
 -- PLUGIN CONFIGS
 -- ============================================================================
+-- require("bufferline").setup({})
+require("barbar").setup({
+	animation = true,
+	auto_hide = false,
+	tabpages = true,
+	clickable = true,
+	focus_on_close = "left",
+	hide = {
+		extensions = false,
+		inactive = false,
+	},
+	icons = {
+		button = "󰅖",
+	},
+})
 
 require("jupytext").setup({
 	style = "markdown",
@@ -587,8 +620,6 @@ end, { desc = "Flash Jump" })
 -- vim.keymap.set({ "n", "x", "o" }, "X", function()
 -- 	require("flash").treesitter()
 -- end, { desc = "Flash Treesitter" })
-
-
 
 --Extra: Treesitter Search (Like 'yR' to yank a treesitter node remotely)
 vim.keymap.set({ "o", "x" }, "R", function()
